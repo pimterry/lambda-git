@@ -1,0 +1,25 @@
+{
+  "name": "lambda-git",
+  "version": "0.1.0",
+  "description": "A git binary installed through NPM, for use with AWS Lambda",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests included, sorry!\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pimterry/lambda-git.git"
+  },
+  "keywords": [
+    "git",
+    "lambda",
+    "aws",
+    "binary"
+  ],
+  "author": "Tim Perry <pimterry@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pimterry/lambda-git/issues"
+  },
+  "homepage": "https://github.com/pimterry/lambda-git#readme"
+}
