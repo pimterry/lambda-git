@@ -17,6 +17,38 @@ teardown() {
   cd $BATS_TEST_DIRNAME
 }
 
+assert_output_matches() {
+  expected="$1"
+  if [[ ! $output =~ $expected ]]; then
+    echo $output
+    false
+  fi
+}
+
+assert_output_doesnt_match() {
+  expected="$1"
+  if [[ $output =~ $expected ]]; then
+    echo $output
+    false
+  fi
+}
+
+assert_output_contains() {
+  expected="$1"
+  if [[ $output != *$expected* ]]; then
+    echo $output
+    false
+  fi
+}
+
+assert_output_doesnt_contain() {
+  expected="$1"
+  if [[ $output = *$expected$ ]]; then
+    echo $output
+    false
+  fi
+}
+
 @test "Should install the Git binary to /tmp/git by default" {  
   run node -e "require('./index.js')()"
 
@@ -36,25 +68,25 @@ teardown() {
   run node -e "require('./index.js')({ targetDirectory: '$TMP_DIRECTORY' }); console.log(process.env)"
 
   [ "$status" -eq 0 ]
-  [[ "$output" = *" PATH: '$TMP_DIRECTORY/usr/bin'"* ]]
-  [[ "$output" = *" GIT_TEMPLATE_DIR: '$TMP_DIRECTORY/usr/share/git-core/templates'"* ]]
-  [[ "$output" = *" GIT_EXEC_PATH: '$TMP_DIRECTORY/usr/libexec/git-core'"* ]]
+  assert_output_matches ".* PATH: '[^']+$TMP_DIRECTORY/usr/bin'.*"
+  assert_output_contains " GIT_TEMPLATE_DIR: '$TMP_DIRECTORY/usr/share/git-core/templates'"
+  assert_output_contains " GIT_EXEC_PATH: '$TMP_DIRECTORY/usr/libexec/git-core'"
 }
 
 @test "Should not change the env, if explicitly asked" {
   run node -e "require('./index.js')({ targetDirectory: '$TMP_DIRECTORY', updateEnv: false }); console.log(process.env)"
 
   [ "$status" -eq 0 ]
-  [[ "$output" = *" PATH: '$TMP_DIRECTORY/usr/bin'"* ]]
-  [[ "$output" != *" GIT_TEMPLATE_DIR: '$TMP_DIRECTORY/usr/share/git-core/templates'"* ]]
-  [[ "$output" != *" GIT_EXEC_PATH: '$TMP_DIRECTORY/usr/libexec/git-core'"* ]]
+  assert_output_doesnt_match ".* PATH: '[^']+$TMP_DIRECTORY/usr/bin'.*"
+  assert_output_doesnt_contain " GIT_TEMPLATE_DIR: '$TMP_DIRECTORY/usr/share/git-core/templates'"
+  assert_output_doesnt_contain " GIT_EXEC_PATH: '$TMP_DIRECTORY/usr/libexec/git-core'"
 }
 
 @test "Should return the relevant env vars, if not updating the env" {
   run node -e "console.log(require('./index.js')({ targetDirectory: '$TMP_DIRECTORY', updateEnv: false }))"
 
   [ "$status" -eq 0 ]
-  [[ "$output" = *" binPath: '$TMP_DIRECTORY/usr/bin'"* ]]
-  [[ "$output" = *" GIT_TEMPLATE_DIR: '$TMP_DIRECTORY/usr/share/git-core/templates'"* ]]
-  [[ "$output" = *" GIT_EXEC_PATH: '$TMP_DIRECTORY/usr/libexec/git-core'"* ]]
+  assert_output_contains " binPath: '$TMP_DIRECTORY/usr/bin'"
+  assert_output_contains " GIT_TEMPLATE_DIR: '$TMP_DIRECTORY/usr/share/git-core/templates'"
+  assert_output_contains " GIT_EXEC_PATH: '$TMP_DIRECTORY/usr/libexec/git-core'"
 }
