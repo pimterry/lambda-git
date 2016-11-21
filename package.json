@@ -4,7 +4,7 @@
   "description": "A git binary installed through NPM, for use with AWS Lambda",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"No tests included, sorry!\""
+    "test": "bats test.sh"
   },
   "repository": {
     "type": "git",
@@ -21,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/pimterry/lambda-git/issues"
   },
-  "homepage": "https://github.com/pimterry/lambda-git#readme"
+  "homepage": "https://github.com/pimterry/lambda-git#readme",
+  "dependencies": {
+    "tar-fs": "^1.14.0"
+  },
+  "devDependencies": {
+    "bats": "^0.4.2"
+  }
 }
