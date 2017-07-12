@@ -5,7 +5,7 @@ var fs = require('fs')
 /**
  * Installs git binaries and updates this process's PATH to include
  * them, so you can child_process.exec('git') successfully.
- * 
+ *
  * Git bundle is extracted to the the target directory. This defaults to
  * /tmp/git, but can be set with the `targetDirectory` option.
  *
@@ -16,29 +16,35 @@ var fs = require('fs')
  * a set of required environmental variables.
  */
 module.exports = function installGit(options) {
-    options = options || {};
+    return new Promise((resolve) => {
+        options = options || {};
 
-    var targetDirectory = options.targetDirectory || "/tmp/git";
-    var updateEnv = (options.updateEnv !== undefined) ? options.updateEnv : true; 
+        var targetDirectory = options.targetDirectory || "/tmp/git";
+        var updateEnv = (options.updateEnv !== undefined) ? options.updateEnv : true;
 
-    fs.createReadStream(path.join(__dirname, "git-2.4.3.tar"))
-      .pipe(tar.extract(targetDirectory));
+        var reader = fs.createReadStream(path.join(__dirname, "git-2.4.3.tar"));
+        reader.pipe(tar.extract(targetDirectory));
+        reader.on('end', done);
 
-    var GIT_TEMPLATE_DIR = path.join(targetDirectory, 'usr/share/git-core/templates');
-    var GIT_EXEC_PATH = path.join(targetDirectory, 'usr/libexec/git-core');
-    var binPath = path.join(targetDirectory, 'usr/bin');
+        var GIT_TEMPLATE_DIR = path.join(targetDirectory, 'usr/share/git-core/templates');
+        var GIT_EXEC_PATH = path.join(targetDirectory, 'usr/libexec/git-core');
+        var binPath = path.join(targetDirectory, 'usr/bin');
 
-    if (updateEnv) {
-        process.env.PATH = process.env.PATH + ":" + binPath;
-        process.env.GIT_TEMPLATE_DIR = GIT_TEMPLATE_DIR;
-        process.env.GIT_EXEC_PATH = GIT_EXEC_PATH;
-    } else {
-        return {
-            binPath: binPath,
-            env: {
-                GIT_TEMPLATE_DIR: GIT_TEMPLATE_DIR,
-                GIT_EXEC_PATH: GIT_EXEC_PATH
+        function done() {
+            if (updateEnv) {
+                process.env.PATH = process.env.PATH + ":" + binPath;
+                process.env.GIT_TEMPLATE_DIR = GIT_TEMPLATE_DIR;
+                process.env.GIT_EXEC_PATH = GIT_EXEC_PATH;
+                resolve();
+            } else {
+                resolve({
+                    binPath: binPath,
+                    env: {
+                        GIT_TEMPLATE_DIR: GIT_TEMPLATE_DIR,
+                        GIT_EXEC_PATH: GIT_EXEC_PATH
+                    }
+                });
             }
-        };
-    }
+        }
+    });
 }
