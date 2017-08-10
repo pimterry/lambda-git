@@ -1,6 +1,6 @@
 {
   "name": "lambda-git",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A git binary installed through NPM, for use with AWS Lambda",
   "main": "index.js",
   "scripts": {
