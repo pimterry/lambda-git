@@ -28,6 +28,7 @@ module.exports = function installGit(options) {
 
         var GIT_TEMPLATE_DIR = path.join(targetDirectory, 'usr/share/git-core/templates');
         var GIT_EXEC_PATH = path.join(targetDirectory, 'usr/libexec/git-core');
+        var LD_LIBRARY_PATH = path.join(targetDirectory, 'usr/lib64');
         var binPath = path.join(targetDirectory, 'usr/bin');
 
         function done() {
@@ -35,13 +36,15 @@ module.exports = function installGit(options) {
                 process.env.PATH = process.env.PATH + ":" + binPath;
                 process.env.GIT_TEMPLATE_DIR = GIT_TEMPLATE_DIR;
                 process.env.GIT_EXEC_PATH = GIT_EXEC_PATH;
+                process.env.LD_LIBRARY_PATH = LD_LIBRARY_PATH;
                 resolve();
             } else {
                 resolve({
                     binPath: binPath,
                     env: {
                         GIT_TEMPLATE_DIR: GIT_TEMPLATE_DIR,
-                        GIT_EXEC_PATH: GIT_EXEC_PATH
+                        GIT_EXEC_PATH: GIT_EXEC_PATH,
+                        LD_LIBRARY_PATH: LD_LIBRARY_PATH
                     }
                 });
             }
