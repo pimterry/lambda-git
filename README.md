@@ -1,5 +1,5 @@
 # lambda-git
-A git binary installed through NPM, for use with AWS Lambda
+A git binary installed through NPM, for use with AWS Lambda.
 
 To use this, just require it, and call it. E.g:
 
@@ -10,6 +10,8 @@ require("lambda-git")();
 After you've made this call, your Node process will be set up to run Git as a subprocess. This extracts a lambda-built version of Git, updates the required environment variables to make it functional, and updates your process.env.PATH to make it accessible.
 
 If you want to do something more complicated, you can provide options to change this behaviour.
+
+The git binary itself comes from [LambCI](https://github.com/lambci/lambci/tree/master/vendor).
 
 ## Changing the installation path:
 
