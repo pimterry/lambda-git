@@ -7,7 +7,20 @@ To use this, just require it, and call it. E.g:
 require("lambda-git")();
 ```
 
-After you've made this call, your Node process will be set up to run Git as a subprocess. This extracts a lambda-built version of Git, updates the required environment variables to make it functional, and updates your process.env.PATH to make it accessible.
+This call returns a promise,, and once it completes, your Node process will be set up to run Git as a subprocess. This extracts a lambda-built version of Git, updates the required environment variables to make it functional, and updates your process.env.PATH to make it accessible. A larger example:
+
+```javascript
+const { exec } = require('child_process');
+
+require("lambda-git")()
+	.then(function () {
+		// git is now ready
+        exec("git --version");
+	})
+	.catch(function (error) {
+		// something failed
+	});
+```
 
 If you want to do something more complicated, you can provide options to change this behaviour.
 
