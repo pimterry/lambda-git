@@ -1,4 +1,8 @@
 # lambda-git
+[![NPM Version](https://img.shields.io/npm/v/lambda-git.svg)](https://www.npmjs.com/package/lambda-git)
+[![Build Status](https://travis-ci.org/pimterry/lambda-git.svg?branch=master)](https://travis-ci.org/pimterry/lambda-git)
+[![Coverage Status](https://coveralls.io/repos/github/pimterry/lambda-git/badge.svg?branch=master)](https://coveralls.io/github/pimterry/lambda-git?branch=master)
+
 A git binary installed through NPM, for use with AWS Lambda.
 
 To use this, just require it, and call it. E.g:
@@ -17,7 +21,7 @@ const { exec } = require('child_process');
 require("lambda-git")()
 	.then(function () {
 		// git is now ready
-        exec("git --version");
+    exec("git --version");
 	})
 	.catch(function (error) {
 		// something failed
@@ -26,13 +30,13 @@ require("lambda-git")()
 
 If you want to do something more complicated, you can provide options to change this behaviour.
 
-The git binary itself comes from [LambCI](https://github.com/lambci/lambci/tree/master/vendor).
+The git binary itself comes from [LambCI](https://github.com/lambci/lambci/tree/version-0.10.0/vendor).
 
 ## Changing the installation path:
 
 ```javascript
 require("lambda-git")({
-    targetDirectory: "/tmp/alternate/path/git"
+  targetDirectory: "/tmp/alternate/path/git" // no action taken if this directory exists
 });
 ```
 
@@ -40,15 +44,15 @@ require("lambda-git")({
 
 ```javascript
 require("lambda-git")({
-    updateEnv: false
+  updateEnv: false
 });
 /* Returns:
 {
-    binPath: "/tmp/git/usr/bin",
-    env: {
-        GIT_TEMPLATE_DIR: '/tmp/git/usr/share/git-core/templates',
-        GIT_EXEC_PATH: '/tmp/git/usr/libexec/git-core'
-    }
+  binPath: "/tmp/git/usr/bin",
+  env: {
+    GIT_TEMPLATE_DIR: '/tmp/git/usr/share/git-core/templates',
+    GIT_EXEC_PATH: '/tmp/git/usr/libexec/git-core'
+  }
 } */
 ```
 

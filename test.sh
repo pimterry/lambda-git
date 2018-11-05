@@ -3,8 +3,10 @@
 # Remember where we started
 BASE_DIR=$(dirname $BATS_TEST_DIRNAME)
 
-# Set up a directory to mess around with
-TMP_DIRECTORY=$(mktemp -d)
+setup() {
+  # Set up a directory to mess around with
+  TMP_DIRECTORY=$(mktemp -d)
+}
 
 teardown() {
   if [ $BATS_TEST_COMPLETED ]; then
@@ -58,10 +60,10 @@ assert_output_doesnt_contain() {
 }
 
 @test "Should install the Git binary to a given directory" {
-  run node -e "require('./index.js')({ targetDirectory: '$TMP_DIRECTORY' })"
+  run node -e "require('./index.js')({ targetDirectory: '$TMP_DIRECTORY/git' })"
 
   [ "$status" -eq 0 ]
-  [ -e "$TMP_DIRECTORY/usr/bin/git" ]
+  [ -e "$TMP_DIRECTORY/git/usr/bin/git" ]
 }
 
 @test "Should set the process env by default" {
