@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "prepublishOnly": "gulp; npm test",
-    "test": "mocha",
+    "stage": "node stageGit.js",
+    "test": "npm run stage && mocha",
+    "prepublishOnly": "npm test",
     "test-with-coverage": "nyc npm test && nyc report --reporter=text-lcov > ./lcov.info"
   },
   "repository": {
@@ -44,9 +45,6 @@
     "coveralls": "^3.0.2",
     "eslint": "^5.9.0",
     "fs-extra": "^7.0.1",
-    "gulp": "^4.0.0",
-    "gulp-cli": "^2.0.1",
-    "gulp-file": "^0.4.0",
     "mocha": "^5.2.0",
     "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^13.0.1",

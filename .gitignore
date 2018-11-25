@@ -1,3 +1,6 @@
+# source controlling only tar file
+bin
+
 # Logs
 logs
 *.log
