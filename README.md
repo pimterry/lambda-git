@@ -1,3 +1,9 @@
+## :warning: This package is deprecated :warning:
+
+Everything should still work, but it's typically better to use https://github.com/lambci/git-lambda-layer instead.
+
+---
+
 # lambda-git
 A git binary installed through NPM, for use with AWS Lambda.
 
