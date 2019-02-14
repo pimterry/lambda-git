@@ -1,19 +1,14 @@
-## :warning: This package is deprecated :warning:
-
-Everything should still work, but it's typically better to use https://github.com/lambci/git-lambda-layer instead.
-
----
-
 # lambda-git
+## [@lambda-git](https://www.npmjs.com/package/lambda-git)
 A git binary installed through NPM, for use with AWS Lambda.
 
-To use this, just require it, and call it. E.g:
+To use this, just require it, and call it.
 
 ```javascript
 require("lambda-git")();
 ```
 
-This call returns a promise, and once it completes your Node process will be set up to run Git as a subprocess. This extracts a lambda-built version of Git, updates the required environment variables to make it functional, and updates your process.env.PATH to make it accessible.
+This call returns a Promise, and once it completes your Node process will be set up to run Git as a subprocess. `lambda-git` extracts a Lambda-built version of Git, updates the required environment variables to make it functional, and updates your process.env.PATH to make it accessible.
 
 A larger example:
 
@@ -32,7 +27,8 @@ require("lambda-git")()
 
 If you want to do something more complicated, you can provide options to change this behaviour.
 
-The git binary itself comes from [LambCI](https://github.com/lambci/lambci/tree/master/vendor).
+The Git binary itself comes from [LambCI](https://github.com/lambci/lambci/tree/master/vendor).
+
 
 ## Changing the installation path:
 
@@ -41,6 +37,7 @@ require("lambda-git")({
     targetDirectory: "/tmp/alternate/path/git"
 });
 ```
+
 
 ## Managing env vars yourself:
 
