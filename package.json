@@ -4,6 +4,7 @@
   "description": "A git binary installed through NPM, for use with AWS Lambda",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint . --ignore-pattern node_modules --fix",
     "test": "bats test.sh"
   },
   "repository": {
@@ -26,6 +27,7 @@
     "tar-fs": "^1.14.0"
   },
   "devDependencies": {
-    "bats": "^0.4.2"
+    "bats": "^0.4.2",
+    "eslint": "^5.13.0"
   }
 }
