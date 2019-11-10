@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --ignore-pattern node_modules --fix",
-    "test": "bats test.sh"
+    "test": "tape test/*-test.js | tap-spec",
+    "bats": "bats test/test.sh"
   },
   "repository": {
     "type": "git",
@@ -24,10 +25,12 @@
   },
   "homepage": "https://github.com/pimterry/lambda-git#readme",
   "dependencies": {
-    "tar-fs": "^1.14.0"
+    "tar-fs": "^2.0.0"
   },
   "devDependencies": {
-    "bats": "^0.4.2",
-    "eslint": "^5.13.0"
+    "bats": "^1.1.0",
+    "eslint": "^6.6.0",
+    "tap-spec": "^5.0.0",
+    "tape": "^4.11.0"
   }
 }
