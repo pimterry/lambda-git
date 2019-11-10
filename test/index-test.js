@@ -50,7 +50,7 @@ if (local) {
   })
 
   test('Install the git binary to /tmp/git by default (continuation passing)', t => {
-    reset(async () => {
+    reset(() => {
       t.plan(1)
       lambdaGit({}, () => {
         t.ok(exists('/tmp/git/usr/bin/git'), 'Git binary exists on the filesystem')
@@ -81,7 +81,7 @@ test('Install the git binary to a given dir and set env vars (async)', t => {
 })
 
 test('Install the git binary to a given dir and set env vars (continuation passing)', t => {
-  reset(async () => {
+  reset(() => {
     t.plan(4)
     let targetDirectory = mkTmp()
     console.log(`Installing to target: ${targetDirectory}`)
@@ -120,7 +120,7 @@ test('Disable env mutation (async)', t => {
 })
 
 test('Disable env mutation (continuation passing)', t => {
-  reset(async () => {
+  reset(() => {
     t.plan(3)
     let targetDirectory = mkTmp()
     console.log(`Installing to target: ${targetDirectory}`)
@@ -152,7 +152,7 @@ test('Promise returns env vars when env mutation is disabled (async)', t => {
 })
 
 test('Promise returns env vars when env mutation is disabled (continuation passing)', t => {
-  reset(async () => {
+  reset(() => {
     t.plan(4)
     let targetDirectory = mkTmp()
     console.log(`Installing to target: ${targetDirectory}`)
@@ -166,7 +166,30 @@ test('Promise returns env vars when env mutation is disabled (continuation passi
   })
 })
 
-// TODO add error handling check in here
+test('Error handling (async)', t => {
+  reset(async () => {
+    t.plan(1)
+    let cwd = process.cwd()
+    exec('mv git-2.4.3.tar tmp.tar', {cwd})
+    try {
+      await lambdaGit()
+    }
+    catch(err) {
+      t.pass(`Got an error back ${err}`)
+    }
+  })
+})
+
+test('Error handling (continuation passing)', t => {
+  reset(() => {
+    t.plan(1)
+    let cwd = process.cwd()
+    lambdaGit({}, err => {
+      t.ok(err, `Got an error back ${err}`)
+    })
+    exec('mv tmp.tar git-2.4.3.tar', {cwd})
+  })
+})
 
 test('Clean up', t => {
   setTimeout(() => {
