@@ -1,6 +1,6 @@
-var path = require('path')
-var tar = require('tar-fs')
-var fs = require('fs')
+let {join} = require('path')
+let tar = require('tar-fs')
+let read = require('fs').createReadStream
 
 /**
  * Installs git binaries and updates this process's PATH to include
@@ -15,21 +15,22 @@ var fs = require('fs')
  * instead including `binPath` (the path to the binaries folder) and `env`,
  * a set of required environmental variables.
  */
-module.exports = function installGit(options) {
+module.exports = function installGit(options={}) {
+  let {
+    targetDirectory='/tmp/git',
+    updateEnv=true
+  } = options
+
   return new Promise((resolve) => {
-    options = options || {}
 
-    var targetDirectory = options.targetDirectory || '/tmp/git'
-    var updateEnv = (options.updateEnv !== undefined) ? options.updateEnv : true
-
-    var reader = fs.createReadStream(path.join(__dirname, 'git-2.4.3.tar'))
+    let reader = read(join(__dirname, 'git-2.4.3.tar'))
     reader.pipe(tar.extract(targetDirectory))
     reader.on('end', done)
 
-    var GIT_TEMPLATE_DIR = path.join(targetDirectory, 'usr/share/git-core/templates')
-    var GIT_EXEC_PATH = path.join(targetDirectory, 'usr/libexec/git-core')
-    var LD_LIBRARY_PATH = path.join(targetDirectory, 'usr/lib64')
-    var binPath = path.join(targetDirectory, 'usr/bin')
+    let GIT_TEMPLATE_DIR = join(targetDirectory, 'usr/share/git-core/templates')
+    let GIT_EXEC_PATH =    join(targetDirectory, 'usr/libexec/git-core')
+    let LD_LIBRARY_PATH =  join(targetDirectory, 'usr/lib64')
+    let binPath =          join(targetDirectory, 'usr/bin')
 
     function done() {
       if (updateEnv) {
