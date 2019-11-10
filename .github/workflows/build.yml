@@ -1,0 +1,33 @@
+name: Node CI
+
+# Push tests commits; pull_request tests PR merges
+on: [push, pull_request]
+
+jobs:
+
+  # Test the build
+  build:
+    # Setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
+  # Go
+    steps:
+    - name: Check out repo
+      uses: actions/checkout@v1
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Versions
+      run: node --version
+
+    - name: Install
+      run: npm install
+
+    - name: Test
+      run: npm test
