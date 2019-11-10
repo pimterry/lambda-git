@@ -48,7 +48,15 @@ if (local) {
       t.ok(exists('/tmp/git/usr/bin/git'), 'Git binary exists on the filesystem')
     })
   })
-  // TODO continuation passing version
+
+  test('Install the git binary to /tmp/git by default (continuation passing)', t => {
+    reset(async () => {
+      t.plan(1)
+      lambdaGit({}, () => {
+        t.ok(exists('/tmp/git/usr/bin/git'), 'Git binary exists on the filesystem')
+      })
+    })
+  })
 }
 
 test('Install the git binary to a given dir and set env vars (async)', t => {
@@ -71,7 +79,27 @@ test('Install the git binary to a given dir and set env vars (async)', t => {
     t.ok(execEnvAdded, `Env includes git exec path: ${process.env.GIT_EXEC_PATH}`)
   })
 })
-// TODO continuation passing version
+
+test('Install the git binary to a given dir and set env vars (continuation passing)', t => {
+  reset(async () => {
+    t.plan(4)
+    let targetDirectory = mkTmp()
+    console.log(`Installing to target: ${targetDirectory}`)
+    lambdaGit({targetDirectory}, () => {
+      t.ok(exists(`${targetDirectory}/usr/bin/git`), 'Git binary exists on the filesystem')
+
+      let pathEnvAdded = process.env.PATH.includes(`${targetDirectory}/usr/bin`)
+      t.ok(pathEnvAdded, `Env $PATH includes git path: ${process.env.PATH}`)
+
+      // Ok instead of equal because it's getting a bit unreadable
+      let templateEnvAdded = process.env.GIT_TEMPLATE_DIR === `${targetDirectory}/usr/share/git-core/templates`
+      t.ok(templateEnvAdded, `Env includes git template dir: ${process.env.GIT_TEMPLATE_DIR}`)
+
+      let execEnvAdded = process.env.GIT_EXEC_PATH === `${targetDirectory}/usr/libexec/git-core`
+      t.ok(execEnvAdded, `Env includes git exec path: ${process.env.GIT_EXEC_PATH}`)
+    })
+  })
+})
 
 test('Disable env mutation (async)', t => {
   reset(async () => {
@@ -91,6 +119,24 @@ test('Disable env mutation (async)', t => {
   })
 })
 
+test('Disable env mutation (continuation passing)', t => {
+  reset(async () => {
+    t.plan(3)
+    let targetDirectory = mkTmp()
+    console.log(`Installing to target: ${targetDirectory}`)
+    lambdaGit({targetDirectory, updateEnv: false}, () => {
+      let pathEnvAdded = process.env.PATH.includes(`${targetDirectory}/usr/bin`)
+      t.notOk(pathEnvAdded, `Env $PATH does not include git path: ${process.env.PATH}`)
+
+      let templateEnvAdded = process.env.GIT_TEMPLATE_DIR === `${targetDirectory}/usr/share/git-core/templates`
+      t.notOk(templateEnvAdded, `Env does not include git template dir: ${process.env.GIT_TEMPLATE_DIR}`)
+
+      let execEnvAdded = process.env.GIT_EXEC_PATH === `${targetDirectory}/usr/libexec/git-core`
+      t.notOk(execEnvAdded, `Env does not include git exec path: ${process.env.GIT_EXEC_PATH}`)
+    })
+  })
+})
+
 test('Promise returns env vars when env mutation is disabled (async)', t => {
   reset(async () => {
     t.plan(4)
@@ -104,6 +150,23 @@ test('Promise returns env vars when env mutation is disabled (async)', t => {
     t.equal(git.env.LD_LIBRARY_PATH, `${targetDirectory}/usr/lib64`, `Returned env.LD_LIBRARY_PATH: ${git.env.LD_LIBRARY_PATH}`)
   })
 })
+
+test('Promise returns env vars when env mutation is disabled (continuation passing)', t => {
+  reset(async () => {
+    t.plan(4)
+    let targetDirectory = mkTmp()
+    console.log(`Installing to target: ${targetDirectory}`)
+    lambdaGit({targetDirectory, updateEnv: false}, (err, result) => {
+      if (err) t.fail(err)
+      t.equal(result.binPath, `${targetDirectory}/usr/bin`, `Returned binPath: ${result.binPath}`)
+      t.equal(result.env.GIT_TEMPLATE_DIR, `${targetDirectory}/usr/share/git-core/templates`, `Returned env.GIT_TEMPLATE_DIR: ${result.env.GIT_TEMPLATE_DIR}`)
+      t.equal(result.env.GIT_EXEC_PATH, `${targetDirectory}/usr/libexec/git-core`, `Returned env.GIT_EXEC_PATH: ${result.env.GIT_EXEC_PATH}`)
+      t.equal(result.env.LD_LIBRARY_PATH, `${targetDirectory}/usr/lib64`, `Returned env.LD_LIBRARY_PATH: ${result.env.LD_LIBRARY_PATH}`)
+    })
+  })
+})
+
+// TODO add error handling check in here
 
 test('Clean up', t => {
   setTimeout(() => {
