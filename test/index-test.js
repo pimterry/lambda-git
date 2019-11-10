@@ -34,14 +34,17 @@ test('Lib returns a Promise', t => {
   })
 })
 
-test('Install the git binary to /tmp/git by default (async)', t => {
-  reset(async () => {
-    t.plan(1)
-    await lambdaGit()
-    t.ok(exists('/tmp/git/usr/bin/git'), 'Git binary exists on the filesystem')
+// GitHub Actions can't work in `/tmp/git` so this will have to remain a local test only
+if (!process.env.CI) {
+  test('Install the git binary to /tmp/git by default (async)', t => {
+    reset(async () => {
+      t.plan(1)
+      await lambdaGit()
+      t.ok(exists('/tmp/git/usr/bin/git'), 'Git binary exists on the filesystem')
+    })
   })
-})
-// TODO continuation passing version
+  // TODO continuation passing version
+}
 
 test('Install the git binary to a given dir and set env vars (async)', t => {
   reset(async () => {
