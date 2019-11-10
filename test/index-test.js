@@ -14,8 +14,12 @@ function reset (callback) {
   if (local) exec('rm -rf /tmp/git')
   exec('rm -rf /tmp/lambda-git-*')
   let tmp = fs.readdirSync('/tmp')
-  let clean = tmp.every(f => f !== 'git' && !f.startsWith('lambda-git'))
-  if (!clean) throw Error('/tmp is not clean')
+  if (local) {
+    let clean = tmp.every(f => f !== 'git')
+    if (!clean) throw Error('/tmp/git is not clean')
+  }
+  let clean = tmp.every(f => !f.startsWith('lambda-git'))
+  if (!clean) throw Error('/tmp/lambda-git-* is not clean')
   callback()
 }
 
@@ -102,5 +106,8 @@ test('Promise returns env vars when env mutation is disabled (async)', t => {
 })
 
 test('Clean up', t => {
-  reset(t.end)
+  setTimeout(() => {
+    // "await" while file ops finish before wrapping up
+    reset(t.end)
+  }, 500)
 })
