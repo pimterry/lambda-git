@@ -1,21 +1,22 @@
 let test = require('tape')
-let exec = require('child_process').exec
+let exec = require('child_process').execSync
 let fs = require('fs')
 let exists = fs.existsSync
 let lambdaGit = require('../')
+
+let local = !process.env.CI
 
 function mkTmp() {
   return fs.mkdtempSync('/tmp/lambda-git-')
 }
 
 function reset (callback) {
-  exec('rm -rf /tmp/git /tmp/lambda-git-*', err => {
-    if (err) throw Error(err)
-    let tmp = fs.readdirSync('/tmp')
-    let clean = tmp.every(f => f !== 'git' && !f.startsWith('lambda-git'))
-    if (!clean) throw Error('/tmp is not clean')
-    callback()
-  })
+  if (local) exec('rm -rf /tmp/git')
+  exec('rm -rf /tmp/lambda-git-*')
+  let tmp = fs.readdirSync('/tmp')
+  let clean = tmp.every(f => f !== 'git' && !f.startsWith('lambda-git'))
+  if (!clean) throw Error('/tmp is not clean')
+  callback()
 }
 
 test('Env check', t => {
@@ -35,7 +36,7 @@ test('Lib returns a Promise', t => {
 })
 
 // GitHub Actions can't work in `/tmp/git` so this will have to remain a local test only
-if (!process.env.CI) {
+if (local) {
   test('Install the git binary to /tmp/git by default (async)', t => {
     reset(async () => {
       t.plan(1)
