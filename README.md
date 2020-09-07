@@ -2,6 +2,8 @@
 ## [@lambda-git](https://www.npmjs.com/package/lambda-git)
 A git binary installed through NPM, for use with AWS Lambda.
 
+_**Deprecated: this module isn't supported on AWS Linux 2 - you probably want to use [git-lambda-layer](https://github.com/lambci/git-lambda-layer) instead. See https://github.com/pimterry/lambda-git/issues/14 for further context.**_
+
 To use this, just require it, and call it.
 
 ```javascript
